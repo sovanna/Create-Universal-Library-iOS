@@ -13,9 +13,9 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "C4199094151F6DD20066AA74"
-               BuildableName = "libSHelloWorldLibraryIOS.a"
-               BlueprintName = "SHelloWorldLibraryIOS"
+               BlueprintIdentifier = "C42684FE151F7A8200C6FAFD"
+               BuildableName = "libHelloWorld"
+               BlueprintName = "libHelloWorld"
                ReferencedContainer = "container:SHelloWorldLibraryIOS.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>

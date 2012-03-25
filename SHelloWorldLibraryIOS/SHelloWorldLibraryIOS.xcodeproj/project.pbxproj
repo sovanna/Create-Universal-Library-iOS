@@ -6,10 +6,52 @@
 	objectVersion = 46;
 	objects = {
 
+/* Begin PBXAggregateTarget section */
+		C42684FE151F7A8200C6FAFD /* libHelloWorld */ = {
+			isa = PBXAggregateTarget;
+			buildConfigurationList = C42684FF151F7A8200C6FAFD /* Build configuration list for PBXAggregateTarget "libHelloWorld" */;
+			buildPhases = (
+				C4268502151F7B5A00C6FAFD /* Build Static Library */,
+				C4268506151F7F2300C6FAFD /* Build Universal Binary */,
+				C426850B151F83DC00C6FAFD /* Headers */,
+				C426850C151F851E00C6FAFD /* Resources */,
+			);
+			dependencies = (
+			);
+			name = libHelloWorld;
+			productName = libHelloWorld;
+		};
+/* End PBXAggregateTarget section */
+
 /* Begin PBXBuildFile section */
 		C4199099151F6DD20066AA74 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C4199098151F6DD20066AA74 /* Foundation.framework */; };
 		C419909F151F6DD20066AA74 /* SHelloWorldLibraryIOS.m in Sources */ = {isa = PBXBuildFile; fileRef = C419909E151F6DD20066AA74 /* SHelloWorldLibraryIOS.m */; };
+		C4268545151F8F2C00C6FAFD /* SHelloWorldLibraryIOS.h in Headers */ = {isa = PBXBuildFile; fileRef = C419909D151F6DD20066AA74 /* SHelloWorldLibraryIOS.h */; };
 /* End PBXBuildFile section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		C426850B151F83DC00C6FAFD /* Headers */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "${BUILD_DIR}/${CONFIGURATION}-iphoneuniversal/${PRODUCT_NAME}.framework/Versions/A/Headers/";
+			dstSubfolderSpec = 0;
+			files = (
+				C4268545151F8F2C00C6FAFD /* SHelloWorldLibraryIOS.h in Headers */,
+			);
+			name = Headers;
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		C426850C151F851E00C6FAFD /* Resources */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "${BUILD_DIR}/${CONFIGURATION}-iphoneuniversal/${PRODUCT_NAME}.framework/Versions/A/Resources/";
+			dstSubfolderSpec = 0;
+			files = (
+			);
+			name = Resources;
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		C4199095151F6DD20066AA74 /* libSHelloWorldLibraryIOS.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libSHelloWorldLibraryIOS.a; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -125,9 +167,41 @@
 			projectRoot = "";
 			targets = (
 				C4199094151F6DD20066AA74 /* SHelloWorldLibraryIOS */,
+				C42684FE151F7A8200C6FAFD /* libHelloWorld */,
 			);
 		};
 /* End PBXProject section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		C4268502151F7B5A00C6FAFD /* Build Static Library */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Build Static Library";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "xcodebuild -project ${PROJECT_NAME}.xcodeproj -sdk iphonesimulator -target ${PROJECT_NAME} -configuration ${CONFIGURATION} clean build CONFIGURATION_BUILD_DIR=${BUILD_DIR}/${CONFIGURATION}-iphonesimulator\n\nxcodebuild -project ${PROJECT_NAME}.xcodeproj -sdk iphoneos -target ${PROJECT_NAME} -configuration ${CONFIGURATION} clean build CONFIGURATION_BUILD_DIR=${BUILD_DIR}/${CONFIGURATION}-iphoneos";
+		};
+		C4268506151F7F2300C6FAFD /* Build Universal Binary */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Build Universal Binary";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "SIMULATOR_LIBRARY_PATH=\"${BUILD_DIR}/${CONFIGURATION}-iphonesimulator/lib${PROJECT_NAME}.a\" &&\nDEVICE_LIBRARY_PATH=\"${BUILD_DIR}/${CONFIGURATION}-iphoneos/lib${PROJECT_NAME}.a\" &&\nUNIVERSAL_LIBRARY_DIR=\"${BUILD_DIR}/${CONFIGURATION}-iphoneuniversal\" &&\nUNIVERSAL_LIBRARY_PATH=\"${UNIVERSAL_LIBRARY_DIR}/${PRODUCT_NAME}\" &&\nFRAMEWORK=\"${UNIVERSAL_LIBRARY_DIR}/${PRODUCT_NAME}.framework\" &&\n\n# Create framework directory structure.\nrm -rf \"${FRAMEWORK}\" &&\nmkdir -p \"${UNIVERSAL_LIBRARY_DIR}\" &&\nmkdir -p \"${FRAMEWORK}/Versions/A/Headers\" &&\nmkdir -p \"${FRAMEWORK}/Versions/A/Resources\" &&\n\n# Generate universal binary for the device and simulator.\nlipo \"${SIMULATOR_LIBRARY_PATH}\" \"${DEVICE_LIBRARY_PATH}\" -create -output \"${UNIVERSAL_LIBRARY_PATH}\" &&\n\n# Move files to appropriate locations in framework paths.\ncp \"${UNIVERSAL_LIBRARY_PATH}\" \"${FRAMEWORK}/Versions/A\" &&\nln -s \"A\" \"${FRAMEWORK}/Versions/Current\" &&\nln -s \"Versions/Current/Headers\" \"${FRAMEWORK}/Headers\" &&\nln -s \"Versions/Current/Resources\" \"${FRAMEWORK}/Resources\" &&\nln -s \"Versions/Current/${PRODUCT_NAME}\" \"${FRAMEWORK}/${PRODUCT_NAME}\"";
+		};
+/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		C4199091151F6DD20066AA74 /* Sources */ = {
@@ -186,6 +260,11 @@
 		C41990A3151F6DD20066AA74 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ARCHS = (
+					"$(ARCHS_STANDARD_32_BIT)",
+					i386,
+					armv6,
+				);
 				DSTROOT = /tmp/SHelloWorldLibraryIOS.dst;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "SHelloWorldLibraryIOS/SHelloWorldLibraryIOS-Prefix.pch";
@@ -198,12 +277,31 @@
 		C41990A4151F6DD20066AA74 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ARCHS = (
+					"$(ARCHS_STANDARD_32_BIT)",
+					i386,
+					armv6,
+				);
 				DSTROOT = /tmp/SHelloWorldLibraryIOS.dst;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "SHelloWorldLibraryIOS/SHelloWorldLibraryIOS-Prefix.pch";
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
+			};
+			name = Release;
+		};
+		C4268500151F7A8200C6FAFD /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Debug;
+		};
+		C4268501151F7A8200C6FAFD /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Release;
 		};
@@ -224,6 +322,15 @@
 			buildConfigurations = (
 				C41990A3151F6DD20066AA74 /* Debug */,
 				C41990A4151F6DD20066AA74 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		C42684FF151F7A8200C6FAFD /* Build configuration list for PBXAggregateTarget "libHelloWorld" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				C4268500151F7A8200C6FAFD /* Debug */,
+				C4268501151F7A8200C6FAFD /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 		};

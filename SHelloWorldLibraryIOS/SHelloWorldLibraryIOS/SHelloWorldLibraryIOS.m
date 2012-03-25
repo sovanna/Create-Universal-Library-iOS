@@ -10,4 +10,9 @@
 
 @implementation SHelloWorldLibraryIOS
 
+- (void)testFromMyFramework
+{
+    NSLog(@"Hello World from my own Framework! cool!");
+}
+
 @end
