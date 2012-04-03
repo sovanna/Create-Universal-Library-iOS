@@ -58,7 +58,11 @@ The aggregate target helps to combine all script, other targets together that we
 
 6. Then add the follow script (Thx to dewind)
 
-<script src="https://gist.github.com/1472207.js"> </script>
+````
+xcodebuild -project ${PROJECT_NAME}.xcodeproj -sdk iphonesimulator -target ${PROJECT_NAME} -configuration ${CONFIGURATION} clean build CONFIGURATION_BUILD_DIR=${BUILD_DIR}/${CONFIGURATION}-iphonesimulator
+
+xcodebuild -project ${PROJECT_NAME}.xcodeproj -sdk iphoneos -target ${PROJECT_NAME} -configuration ${CONFIGURATION} clean build CONFIGURATION_BUILD_DIR=${BUILD_DIR}/${CONFIGURATION}-iphoneos
+````
 
 ### Build universal library
 
@@ -68,7 +72,31 @@ We're going to add another script that builds the framework.
 2. rename it to "Build Universal Binary"
 3. add finally add the follow code
 
-<script src="https://gist.github.com/1472295.js"> </script>
+
+`````
+SIMULATOR_LIBRARY_PATH="${BUILD_DIR}/${CONFIGURATION}-iphonesimulator/lib${PROJECT_NAME}.a" &&
+DEVICE_LIBRARY_PATH="${BUILD_DIR}/${CONFIGURATION}-iphoneos/lib${PROJECT_NAME}.a" &&
+UNIVERSAL_LIBRARY_DIR="${BUILD_DIR}/${CONFIGURATION}-iphoneuniversal" &&
+UNIVERSAL_LIBRARY_PATH="${UNIVERSAL_LIBRARY_DIR}/${PRODUCT_NAME}" &&
+FRAMEWORK="${UNIVERSAL_LIBRARY_DIR}/${PRODUCT_NAME}.framework" &&
+
+# Create framework directory structure.
+rm -rf "${FRAMEWORK}" &&
+mkdir -p "${UNIVERSAL_LIBRARY_DIR}" &&
+mkdir -p "${FRAMEWORK}/Versions/A/Headers" &&
+mkdir -p "${FRAMEWORK}/Versions/A/Resources" &&
+
+# Generate universal binary for the device and simulator.
+lipo "${SIMULATOR_LIBRARY_PATH}" "${DEVICE_LIBRARY_PATH}" -create -output "${UNIVERSAL_LIBRARY_PATH}" &&
+
+# Move files to appropriate locations in framework paths.
+cp "${UNIVERSAL_LIBRARY_PATH}" "${FRAMEWORK}/Versions/A" &&
+ln -s "A" "${FRAMEWORK}/Versions/Current" &&
+ln -s "Versions/Current/Headers" "${FRAMEWORK}/Headers" &&
+ln -s "Versions/Current/Resources" "${FRAMEWORK}/Resources" &&
+ln -s "Versions/Current/${PRODUCT_NAME}" "${FRAMEWORK}/${PRODUCT_NAME}"
+`````
+
 
 ### Add Header files in the framework to make it visible
 
